@@ -7,7 +7,7 @@ const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 
 // Track attendence
-const maxCount = 10;
+const maxCount = 50;
 let count = parseInt(localStorage.getItem("count") || "0", 10);
 
 
