@@ -1,5 +1,7 @@
 // Get all needed DOM elements
 
+const attendeeCountEl = document.getElementById("attendeeCount");
+
 const form = document.getElementById("checkInForm");
 const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
@@ -58,7 +60,7 @@ function incrementTeam(team) {
   // Handle the global attendee count
   count = parseInt(localStorage.getItem("count") || "0", 10);
   count++;
-  document.getElementById("attendeeCount").textContent = count;
+  attendeeCountEl.textContent = count;
   localStorage.setItem("count", count);
 }
 
@@ -73,7 +75,7 @@ window.addEventListener("load", () => {
 
   const savedTotal = localStorage.getItem("count");
   if (savedTotal !== null) {
-    document.getElementById("count").textContent = savedTotal;
+    attendeeCountEl.textContent = savedTotal;
     count = parseInt(savedTotal, 10);
   } else {
     count = 0;
@@ -121,24 +123,23 @@ form.addEventListener("submit", function (e) {
 
   if (count === maxCount) {
     if (teamWaterScore >= teamZeroScore && teamWaterScore >= teamPowerScore) {
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Water Wise!!\nYou have the most attendees with ${teamWaterScore} people.`;
+      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Water Wise!!🎉\nYou have the most attendees with ${teamWaterScore} people.`;
       showGreeting(message, true);
     } else if (teamZeroScore >= teamWaterScore && teamZeroScore >= teamPowerScore) {
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Net Zero!!\nYou have the most attendees with ${teamZeroScore} people.`;
+      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Net Zero!!🎉\nYou have the most attendees with ${teamZeroScore} people.`;
       showGreeting(message, true);
     } else {
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Renewables!!\nYou have the most attendees with ${teamPowerScore} people.`;
+      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Renewables!!🎉!!LaSh3v6m\nYou have the most attendees with ${teamPowerScore} people.`;
+      CK
       showGreeting(message, true);
     }
   } else {
-    message = `🎉 Welcome, ${name} from ${teamName}`;
+    message = `🎉 Welcome, ${name} from ${teamName}🎉`;
     showGreeting(message);
   }
 
   // Update attendance on browser
-  const attendCount = document.getElementById("attendeeCount");
-  attendCount.textContent = count;
-
+  attendeeCountEl.textContent = count;
   form.reset();
 });
 

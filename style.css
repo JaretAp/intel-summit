@@ -393,5 +393,6 @@ select {
   }
   #resetBtn {
     max-width: 40%;
+    min-width: 8rem;
   }
 }
