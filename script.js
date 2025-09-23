@@ -43,6 +43,20 @@ function showGreeting(message, isGoalReached = false) {
   }
 }
 
+function renderAttendees() {
+  const attendeeItems = document.getElementById("attendeeItems");
+  attendeeItems.innerHTML = ""; // clear old list
+
+  let attendees = JSON.parse(localStorage.getItem("attendees") || "[]");
+
+  attendees.forEach(a => {
+    const li = document.createElement("li");
+    li.textContent = `${a.name} — ${a.team}`;
+    attendeeItems.appendChild(li);
+  });
+}
+
+
 // increment teams persistently
 function incrementTeam(team) {
   const teamCounter = document.getElementById(team + "Count");
@@ -72,6 +86,9 @@ window.addEventListener("load", () => {
       document.getElementById(team + "Count").textContent = saved;
     }
   });
+
+  renderAttendees();
+
 
   const savedTotal = localStorage.getItem("count");
   if (savedTotal !== null) {
@@ -138,6 +155,15 @@ form.addEventListener("submit", function (e) {
     showGreeting(message);
   }
 
+  // Save attendee in localStorage
+  let attendees = JSON.parse(localStorage.getItem("attendees") || "[]");
+  attendees.push({ name, team: teamName });
+  localStorage.setItem("attendees", JSON.stringify(attendees));
+
+  // Re-render list from storage
+  renderAttendees();
+
+
   // Update attendance on browser
   attendeeCountEl.textContent = count;
   form.reset();
@@ -145,6 +171,9 @@ form.addEventListener("submit", function (e) {
 
 document.getElementById("resetBtn").addEventListener("click", () => {
   // Clear everything in localStorage
+  localStorage.removeItem("attendees");
+  renderAttendees(); // refresh empty list
+
   localStorage.clear();
 
   // Reset team counts in DOM

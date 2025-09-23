@@ -281,6 +281,44 @@ button .fas {
   text-decoration: underline;
 }
 
+.attendee-list {
+  max-height: 220px;           /* fixed height box */
+  overflow-y: auto;            /* vertical scroll if list gets long */
+  border: 2px solid #f1f5f9;   /* soft border like team stats divider */
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px 0;
+  background-color: #f8fafc;   /* same as form background */
+  box-shadow: 0 4px 12px rgba(0, 113, 197, 0.08);
+  text-align: left;
+}
+
+.attendee-list h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.attendee-list ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.attendee-list li {
+  padding: 6px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+  color: #334155;
+}
+
+.attendee-list li:last-child {
+  border-bottom: none;
+}
+
+
 /* Input wrapper for name and team select */
 .input-wrapper {
   flex: 1;
