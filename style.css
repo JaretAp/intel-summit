@@ -246,6 +246,8 @@ button .fas {
   color: #333;
   margin-bottom: 15px;
   display: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
 .success-message {
