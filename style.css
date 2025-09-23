@@ -344,6 +344,15 @@ select {
   color: #475569;
 }
 
+#reset {
+  display: flex;
+  justify-content: center;
+}
+
+#reset-Btn {
+  display: flex;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .hero {
@@ -376,5 +385,13 @@ select {
 
   .teams-grid {
     grid-template-columns: 1fr;
+  }
+  
+  #reset {
+    flex-direction: column;
+    align-items: center;
+  }
+  #resetBtn {
+    max-width: 40%;
   }
 }

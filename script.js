@@ -5,13 +5,15 @@ const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 
 // Track attendence
-let count = 0;
-const maxCount = 3;
+const maxCount = 10;
+let count = parseInt(localStorage.getItem("count") || "0", 10);
+
 
 // Message function
 function showGreeting(message, isGoalReached = false) {
   const greeting = document.getElementById("greeting");
   greeting.textContent = message;
+  greeting.style.whiteSpace = "pre-line";
   greeting.style.display = "block";
 
   // Allow browser to register "display:block: before changing opacity
@@ -39,27 +41,68 @@ function showGreeting(message, isGoalReached = false) {
   }
 }
 
+// increment teams persistently
+function incrementTeam(team) {
+  const teamCounter = document.getElementById(team + "Count");
+
+  //load team count from storage (fall back to DOM if missing)
+  let teamCount = parseInt(localStorage.getItem(team) || teamCounter.textContent, 10);
+
+  // increment
+  teamCount++;
+
+  // Save back to DOM and localStorage
+  teamCounter.textContent = teamCount;
+  localStorage.setItem(team, teamCount);
+
+  // Handle the global attendee count
+  count = parseInt(localStorage.getItem("count") || "0", 10);
+  count++;
+  document.getElementById("attendeeCount").textContent = count;
+  localStorage.setItem("count", count);
+}
+
+// page loads
+window.addEventListener("load", () => {
+  ["water", "power", "zero"].forEach(team => {
+    const saved = localStorage.getItem(team);
+    if (saved !== null) {
+      document.getElementById(team + "Count").textContent = saved;
+    }
+  });
+
+  const savedTotal = localStorage.getItem("count");
+  if (savedTotal !== null) {
+    document.getElementById("count").textContent = savedTotal;
+    count = parseInt(savedTotal, 10);
+  } else {
+    count = 0;
+  }
+});
+
+
 
 // Handle form submission
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-  
-  const name= nameInput.value;
+
+  const name = nameInput.value;
   const team = teamSelect.value;
   const teamName = teamSelect.selectedOptions[0].text;
 
-  
+  incrementTeam(team);
+  count = parseInt(localStorage.getItem("count"), 10);
+
+
+
 
   console.log(name, teamName);
 
-  count++;
-
-  
   console.log("Total check-ins: ", count);
 
   // Update Progress Bar
-  const percentage = Math.round((count/ maxCount) * 100);
+  const percentage = Math.round((count / maxCount) * 100);
   console.log(`Progress: ${percentage}%`);
 
   // Update the progress bar element
@@ -67,43 +110,55 @@ form.addEventListener("submit", function (e) {
   progressBar.style.width = percentage + "%";;
 
   // Update team counter
-  const teamCounter = document.getElementById(team + "Count");
-  teamCounter.textContent = parseInt(teamCounter.textContent) + 1;
-
-  let teamWaterScore = parseInt(document.getElementById("waterCount").textContent); 
+  let teamWaterScore = parseInt(document.getElementById("waterCount").textContent);
   let teamZeroScore = parseInt(document.getElementById("zeroCount").textContent);
   let teamPowerScore = parseInt(document.getElementById("powerCount").textContent);
 
+
   // Show welcome message
   let message = "";
- 
+
 
   if (count === maxCount) {
     if (teamWaterScore >= teamZeroScore && teamWaterScore >= teamPowerScore) {
-      greeting.style.whiteSpace = "pre-line";
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Water Wise!!\nYou have the most attendees with ${teamWaterScore} people.\n Great Work, Team Water Wise!!`;
+      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Water Wise!!\nYou have the most attendees with ${teamWaterScore} people.`;
       showGreeting(message, true);
     } else if (teamZeroScore >= teamWaterScore && teamZeroScore >= teamPowerScore) {
-      greeting.style.whiteSpace = "pre-line";
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Net Zero!!\nYou have the most attendees with ${teamZeroScore} people.\n Great Work, Team Net Zero!!`;
+      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Net Zero!!\nYou have the most attendees with ${teamZeroScore} people.`;
       showGreeting(message, true);
     } else {
-      greeting.style.whiteSpace = "pre-line";
-      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Renewables!!\nYou have the most attendees with ${teamPowerScore} people.\n Great Work, Team Renewables!!`;
+      message = `🎉 Welcome, ${name} from ${teamName}\nCongratulations Team Renewables!!\nYou have the most attendees with ${teamPowerScore} people.`;
       showGreeting(message, true);
-    } 
+    }
   } else {
     message = `🎉 Welcome, ${name} from ${teamName}`;
     showGreeting(message);
   }
-  
 
-  
   // Update attendance on browser
   const attendCount = document.getElementById("attendeeCount");
   attendCount.textContent = count;
 
   form.reset();
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  // Clear everything in localStorage
+  localStorage.clear();
+
+  // Reset team counts in DOM
+  ["water", "zero", "power"].forEach(team => {
+    document.getElementById(team + "Count").textContent = "0";
+  });
+
+  // Reset global attendee count
+  count = 0;
+  document.getElementById("attendeeCount").textContent = "0";
+
+  // Reset progress bar
+  document.getElementById("progressBar").style.width = "0%";
+
+  alert("All counters have been reset!");
 });
 
 
