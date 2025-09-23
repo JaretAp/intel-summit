@@ -6,17 +6,35 @@ const form = document.getElementById("checkInForm");
 const nameInput = document.getElementById("attendeeName");
 const teamSelect = document.getElementById("teamSelect");
 
+// team colors
+const teamColors = {
+  water: "#e8f7fc",
+  zero: "#ecfdf3",
+  power: "#fff7ed"
+};
+
+const teamIcons = {
+  water: '🌊',
+  zero: '🌿',
+  power: '⚡'
+};
+
 // Track attendence
 const maxCount = 50;
 let count = parseInt(localStorage.getItem("count") || "0", 10);
 
 
 // Message function
-function showGreeting(message, isGoalReached = false) {
+function showGreeting(message, isGoalReached = false, team = null) {
   const greeting = document.getElementById("greeting");
   greeting.textContent = message;
   greeting.style.whiteSpace = "pre-line";
   greeting.style.display = "block";
+
+  // If a team was passed, apply the background color
+  if (team && teamColors[team]) {
+    greeting.style.backgroundColor = teamColors[team];
+  }
 
   // Allow browser to register "display:block: before changing opacity
   setTimeout(() => {
@@ -51,7 +69,8 @@ function renderAttendees() {
 
   attendees.forEach(a => {
     const li = document.createElement("li");
-    li.textContent = `${a.name} — ${a.team}`;
+    li.textContent = `${a.name}  —  ${a.teamIcon} ${a.teamName} ${a.teamIcon}`;
+    li.style.backgroundColor = a.teamBackground;
     attendeeItems.appendChild(li);
   });
 }
@@ -140,24 +159,24 @@ form.addEventListener("submit", function (e) {
 
   if (count === maxCount) {
     if (teamWaterScore >= teamZeroScore && teamWaterScore >= teamPowerScore) {
-      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Water Wise!!🎉\nYou have the most attendees with ${teamWaterScore} people.`;
-      showGreeting(message, true);
+      message = `🎉 Welcome 🎉, ${name} from ${teamIcons[team]} ${teamName} ${teamIcons[team]}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Water Wise!! ${teamIcons[team]}\nYou have the most attendees with ${teamWaterScore} people.`;
+      showGreeting(message, true, team);
     } else if (teamZeroScore >= teamWaterScore && teamZeroScore >= teamPowerScore) {
-      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Net Zero!!🎉\nYou have the most attendees with ${teamZeroScore} people.`;
-      showGreeting(message, true);
+      message = `🎉 Welcome 🎉 ${name} from ${teamName}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Net Zero!! ${teamIcons[team]} \nYou have the most attendees with ${teamZeroScore} people.`;
+      showGreeting(message, true, team);
     } else {
-      message = `🎉 Welcome, ${name} from ${teamName}\n🎉Congratulations Team Renewables!!🎉!!LaSh3v6m\nYou have the most attendees with ${teamPowerScore} people.`;
+      message = `🎉 Welcome 🎉 ${name} from ${teamName}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Renewables!! ${teamIcons[team]}\nYou have the most attendees with ${teamPowerScore} people.`;
       CK
-      showGreeting(message, true);
+      showGreeting(message, true, team);
     }
   } else {
-    message = `🎉 Welcome, ${name} from ${teamName}🎉`;
-    showGreeting(message);
+    message = `🎉 Welcome 🎉 ${name} from ${teamIcons[team]} ${teamName} ${teamIcons[team]}`;
+    showGreeting(message, false, team);
   }
 
   // Save attendee in localStorage
   let attendees = JSON.parse(localStorage.getItem("attendees") || "[]");
-  attendees.push({ name, team: teamName });
+  attendees.push({ name, teamKey: team, teamName: teamName, teamIcon: teamIcons[team], teamBackground: teamColors[team] });
   localStorage.setItem("attendees", JSON.stringify(attendees));
 
   // Re-render list from storage
