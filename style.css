@@ -293,9 +293,9 @@ button .fas {
   text-align: left;
 }
 
-.attendee-list h3 {
-  font-size: 16px;
-  font-weight: 600;
+.attendee-list h2 {
+  font-size: 18px;
+  font-weight: 700;
   color: #475569;
   margin-bottom: 12px;
   text-align: center;
@@ -312,6 +312,7 @@ button .fas {
   border-bottom: 1px solid #e2e8f0;
   font-size: 15px;
   color: #334155;
+  text-align: center;
 }
 
 .attendee-list li:last-child {

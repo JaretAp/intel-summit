@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Intel Sustainability Summit Check-In</title>
     <!-- Add Font Awesome CSS -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" content=""
     />
     <link rel="stylesheet" href="style.css?v=105" />
   </head>
@@ -50,7 +50,7 @@
               placeholder="Enter name..."
               required
             />
-            <select id="teamSelect" name="team" required>
+            <select id="teamSelect" name="team" required aria-label="Select Team">
               <option value="" disabled selected>Select Team...</option>
               <option value="water">Team Water Wise</option>
               <option value="zero">Team Net Zero</option>
@@ -64,7 +64,7 @@
       </form>
 
       <div class="attendee-list">
-        <h3>Checked-in Attendees</h3>
+        <h2>Checked-in Attendees</h2>
         <ul id="attendeeItems"></ul>
       </div>
 
