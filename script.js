@@ -21,7 +21,7 @@ const teamIcons = {
 };
 
 // Track attendence
-const maxCount = 5;
+const maxCount = 50;
 let count = parseInt(localStorage.getItem("count") || "0", 10);
 
 
