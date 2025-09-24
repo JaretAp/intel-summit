@@ -451,6 +451,7 @@ select {
   input,
   button {
     width: 100%;
+    max-width: 244px;
   }
 
   button {
@@ -470,8 +471,7 @@ select {
     align-items: center;
   }
   #resetBtn {
-    max-width: 40%;
-    min-width: 8rem;
+    min-width: 244px;
   }
   #winningMessage {
     font-size: 1.35rem;
