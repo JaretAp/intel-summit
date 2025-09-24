@@ -13,6 +13,7 @@ const teamColors = {
   power: "#fff7ed"
 };
 
+// Team icons
 const teamIcons = {
   water: '🌊',
   zero: '🌿',
@@ -20,15 +21,14 @@ const teamIcons = {
 };
 
 // Track attendence
-const maxCount = 50;
+const maxCount = 5;
 let count = parseInt(localStorage.getItem("count") || "0", 10);
 
 
-// Message function
-function showGreeting(message, isGoalReached = false, team = null) {
+// greeting function
+function showGreeting(message, team = null) {
   const greeting = document.getElementById("greeting");
-  greeting.textContent = message;
-  greeting.style.whiteSpace = "pre-line";
+  greeting.innerHTML = message;
   greeting.style.display = "block";
 
   // If a team was passed, apply the background color
@@ -41,24 +41,38 @@ function showGreeting(message, isGoalReached = false, team = null) {
     greeting.style.opacity = 1;
   }, 10);
 
-  if (isGoalReached) {
+
+
+  setTimeout(() => {
+    greeting.style.opacity = 0;
 
     setTimeout(() => {
-      greeting.style.opacity = 0;
+      greeting.style.display = 'none';
+    }, 2000);
+  }, 4000);
+}
 
-      setTimeout(() => {
-        greeting.style.display = 'none';
-      }, 8000);
-    }, 12000);
+function showWinningMessage(teamKey, teamName, score) {
+  const winningMessage = document.getElementById("winningMessage");
+  const isMobile = window.innerWidth < 600;
+
+  if(window.innerWidth < 400) {
+    winningMessage.innerHTML = `🎉 Congratulations 🎉<br>${teamIcons[teamKey]} ${teamName} ${teamIcons[teamKey]}<br>${teamName} wins summit<br>with ${score} attendees!`;
+  } else if (isMobile) {
+    winningMessage.innerHTML = `🎉 Congratulations 🎉<br>${teamIcons[teamKey]} ${teamName} ${teamIcons[teamKey]}<br>${teamName} won the summit with ${score} attendees!`;
   } else {
-    setTimeout(() => {
-      greeting.style.opacity = 0;
-
-      setTimeout(() => {
-        greeting.style.display = 'none';
-      }, 800);
-    }, 3000);
+    winningMessage.innerHTML = `🎉 Congratulations 🎉 ${teamIcons[teamKey]} ${teamName} ${teamIcons[teamKey]}<br>${teamName} won the summit with ${score} attendees!`;
   }
+
+  winningMessage.style.backgroundColor = teamColors[teamKey];
+  winningMessage.style.display = "block";
+  setTimeout(() => {
+    winningMessage.style.opacity = 1;
+  }, 10);
+
+  localStorage.setItem("winningMessage", winningMessage.innerHTML);
+  localStorage.setItem("winningTeam", teamKey); // optional if you want to restyle on reload
+
 }
 
 function renderAttendees() {
@@ -69,7 +83,11 @@ function renderAttendees() {
 
   attendees.forEach(a => {
     const li = document.createElement("li");
-    li.textContent = `${a.name}  —  ${a.teamIcon} ${a.teamName} ${a.teamIcon}`;
+    if (window.innerWidth >599.8) {
+       li.innerHTML = `<span class="liName">${a.name}</span><span class="teamIcons">${a.teamIcon}</span><span class="liTeam">${a.teamName}</span><span class="teamIcons">${a.teamIcon}</span>`;
+    } else {
+       li.innerHTML = `<span class="liName">${a.name}</span><br><span class="teamIcons">${a.teamIcon}</span><span class="liTeam">${a.teamName}</span><span class="teamIcons">${a.teamIcon}</span>`;
+    }
     li.style.backgroundColor = a.teamBackground;
     attendeeItems.appendChild(li);
   });
@@ -105,9 +123,20 @@ window.addEventListener("load", () => {
       document.getElementById(team + "Count").textContent = saved;
     }
   });
+  const savedMessage = localStorage.getItem("winningMessage");
+  const savedTeam = localStorage.getItem("winningTeam");
+
+  if (savedMessage) {
+    const winningMessage = document.getElementById("winningMessage");
+    winningMessage.innerHTML = savedMessage;
+    if (savedTeam) {
+      winningMessage.style.backgroundColor = teamColors[savedTeam];
+    }
+    winningMessage.style.display = "block";
+    winningMessage.style.opacity = 1;
+  }
 
   renderAttendees();
-
 
   const savedTotal = localStorage.getItem("count");
   if (savedTotal !== null) {
@@ -117,8 +146,6 @@ window.addEventListener("load", () => {
     count = 0;
   }
 });
-
-
 
 // Handle form submission
 
@@ -130,14 +157,8 @@ form.addEventListener("submit", function (e) {
   const teamName = teamSelect.selectedOptions[0].text;
 
   incrementTeam(team);
+
   count = parseInt(localStorage.getItem("count"), 10);
-
-
-
-
-  console.log(name, teamName);
-
-  console.log("Total check-ins: ", count);
 
   // Update Progress Bar
   const percentage = Math.round((count / maxCount) * 100);
@@ -152,26 +173,20 @@ form.addEventListener("submit", function (e) {
   let teamZeroScore = parseInt(document.getElementById("zeroCount").textContent);
   let teamPowerScore = parseInt(document.getElementById("powerCount").textContent);
 
-
   // Show welcome message
-  let message = "";
+  showGreeting(`🎉Welcome ${name}🎉<br> ${teamIcons[team]}${teamName}${teamIcons[team]}`, team);
 
+ 
 
+  // Show winning message
   if (count === maxCount) {
     if (teamWaterScore >= teamZeroScore && teamWaterScore >= teamPowerScore) {
-      message = `🎉 Welcome 🎉, ${name} from ${teamIcons[team]} ${teamName} ${teamIcons[team]}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Water Wise!! ${teamIcons[team]}\nYou have the most attendees with ${teamWaterScore} people.`;
-      showGreeting(message, true, team);
+      showWinningMessage("water", "Team Water Wise", teamWaterScore);
     } else if (teamZeroScore >= teamWaterScore && teamZeroScore >= teamPowerScore) {
-      message = `🎉 Welcome 🎉 ${name} from ${teamName}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Net Zero!! ${teamIcons[team]} \nYou have the most attendees with ${teamZeroScore} people.`;
-      showGreeting(message, true, team);
+      showWinningMessage("zero", "Team Net Zero", teamZeroScore);
     } else {
-      message = `🎉 Welcome 🎉 ${name} from ${teamName}\n🎉 Congratulations 🎉  ${teamIcons[team]} Team Renewables!! ${teamIcons[team]}\nYou have the most attendees with ${teamPowerScore} people.`;
-      CK
-      showGreeting(message, true, team);
+      showWinningMessage("power", "Team Renewables", teamPowerScore);
     }
-  } else {
-    message = `🎉 Welcome 🎉 ${name} from ${teamIcons[team]} ${teamName} ${teamIcons[team]}`;
-    showGreeting(message, false, team);
   }
 
   // Save attendee in localStorage
@@ -182,15 +197,17 @@ form.addEventListener("submit", function (e) {
   // Re-render list from storage
   renderAttendees();
 
-
   // Update attendance on browser
   attendeeCountEl.textContent = count;
   form.reset();
 });
 
+// Reset localStorage and cache for new competition  
 document.getElementById("resetBtn").addEventListener("click", () => {
   // Clear everything in localStorage
   localStorage.removeItem("attendees");
+  localStorage.removeItem('winningMessage');
+  localStorage.removeItem('winningTeam');
   renderAttendees(); // refresh empty list
 
   localStorage.clear();
@@ -206,6 +223,12 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 
   // Reset progress bar
   document.getElementById("progressBar").style.width = "0%";
+
+  // Reset winning message
+  const winningMessage = document.getElementById('winningMessage');
+  winningMessage.textContent = "";
+  winningMessage.style.display = "none";
+  winningMessage.style.opacity = 0;
 
   alert("All counters have been reset!");
 });
